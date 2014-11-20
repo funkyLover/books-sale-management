@@ -1,0 +1,36 @@
+doctype html
+html
+    head
+        title 邑大书库管理系统
+        // Viewport mobile tag for sensible mobile support
+        meta(name="viewport",content="width=device-width, initial-scale=1, maximum-scale=1")
+        meta(charset="utf-8")
+        link(rel="stylesheet", href="/styles/bootstrap.min.css")
+        link(rel="stylesheet", href="/styles/login.css")
+        link(rel="stylesheet", href="/styles/alertify.core.css")
+        link(rel="stylesheet", href="/styles/alertify.default.css")
+        block styles
+
+        script(type="text/javascript", src="/js/jquery.js")
+        script(type="text/javascript", src="/js/alertify.min.js")
+        script(type="text/javascript", src="/js/jquery.cookie.js")
+        script(type="text/javascript", src="/js/alertmsg.js")
+    body
+        form(role='form', id='login', action='/login', method='post')
+            .form-group
+                label(for='username') 用户名
+                input#username.form-control(type='text', name='username', placeholder='请输入用户名')
+            .form-group
+                label(for='password') 密码
+                input#password.form-control(type='password', name='password', placeholder='请输入密码')
+            button.btn.btn-default(type='submit') 登陆
+            button.btn.btn-default(type='reset') 重置
+
+        block body
+        // A few key dependencies, linked in order
+        // Bring in the socket.io client
+        script(type="text/javascript", src="/js/socket.io.js")
+        // then beef it up with some convenience logic for talking to Sails.js'
+        script(type="text/javascript", src="/js/sails.io.js")
+        // listen on socket.io for incoming messages
+        script(type="text/javascript", src="/js/app.js")

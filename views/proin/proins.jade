@@ -1,0 +1,46 @@
+extends ../layout
+block body
+  .jumbotron
+    h2 入库单列表
+    table.table.table-bordered
+      thead
+        tr
+          th 入库单号
+          th 来货单号
+          th 总价
+          th 经手人
+          th 是否退货
+          th 入库时间
+          th 操作
+      tbody
+        if none
+          tr
+            td#none-td(colspan=7) 没有记录
+        else
+          each proin in proins
+            tr
+              td #{proin.id}
+              td #{proin.manifest}
+              td #{proin.price}
+              td #{proin.handler}
+              td
+                if proin.isRefund
+                  | 是
+                else
+                  | 否
+              td.createdAt(data-date=proin.createdAt.toJSON())
+              td
+                a.btn.btn-primary(href='/proin/view/'+proin.id, target='_blank') 详细信息
+    ul#pagination.pagination.pagination-lg
+      if pre
+        li
+          a(href='/proin/'+pre) <<
+      if !none
+        li
+          a(href='#') #{page}
+      if next
+        li
+          a(href='/proin/'+next) >>
+  script(type="text/javascript", src="/js/moment.js")
+  script(type="text/javascript", src="/js/moment.min.js")
+    

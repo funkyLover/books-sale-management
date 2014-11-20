@@ -1,0 +1,50 @@
+extends ../layout
+block body
+  .jumbotron
+    h2 出库单列表
+    table.table.table-bordered
+      thead
+        tr
+          th 出库单号
+          th 总价
+          th 经手人
+          th 付款情况
+          th 是否退货
+          th 出库时间
+          th 操作
+      tbody
+        if none
+          tr
+            td#none-td(colspan=8) 没有记录
+        else
+          each proout in proouts
+            tr
+              td #{proout.id}
+              td #{proout.price}
+              td #{proout.handler}
+              td
+                if proout.isPay
+                  | 是
+                else
+                  | 否
+              td
+                if proout.isRefund
+                  | 是
+                else
+                  | 否
+              td.createdAt(data-date=proout.createdAt.toJSON())
+              td
+                a.btn.btn-primary(href='/proout/view/'+proout.id, target='_blank') 详细信息
+    ul#pagination.pagination.pagination-lg
+      if pre
+        li
+          a(href='/proout/'+pre) <<
+      if !none
+        li
+          a(href='#') #{page}
+      if next
+        li
+          a(href='/proout/'+next) >>
+  script(type="text/javascript", src="/js/moment.js")
+  script(type="text/javascript", src="/js/moment.min.js")
+    

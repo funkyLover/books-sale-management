@@ -1,0 +1,52 @@
+extends ../layout
+block body
+  .jumbotron
+    h2 书本库存情况
+    form#form-create.form-inline(role='form', action='/book/stock/'+book.id, method='post', autocomplete='off')
+      .form-group
+        label(for='bookid') 书号
+        input#bookid.form-control(type='text', name='bookid', readonly='true', value=book.bookId, disabled='true')
+      .form-group
+        label(for='title') 书名
+        input#title.form-control(type='text', name='title', readonly='true', value=book.title, disabled='true')
+      .form-group
+        label(for='edition') 版次
+        input#edition.form-control(type='text', name='edition', readonly='true', value=book.edition, disabled='true')
+      .form-group
+        label(for='price') 价格
+        input#price.form-control(type='text', name='price', readonly='true', value=book.price, disabled='true')
+      .form-group
+        label(for='stock') 库存数
+        input#stock.form-control(type='text', name='stock', readonly='true', value=book.stock, disabled='true')
+      .form-group
+        label(for='stockbycount') 实际库存
+        input#stockbycount.form-control(type='text', name='stockbycount', readonly='true', value=book.stockByCount, required)
+      .form-group
+        label(for='pal') 盈亏册数
+        input#pal.form-control(type='text', name='pal', readonly='true', value=book.pal, disabled='true')
+      .form-group
+        label(for='palm') 盈亏金额
+        input#palm.form-control(type='text', name='palm', readonly='true', value=book.palm, disabled='true')
+      input(type='hidden', name='_method', value='put')
+      if user.isAdmin
+        button#modi.btn.btn-default(type='button') 清点
+        a#clear.btn.btn-danger(href='/book/stocktozero/'+book.id) 库存清零
+        button.btn.btn-default(type='submit', style="display:none") 确认
+        button#cancel.btn.btn-default(type='button', style="display:none") 取消
+
+      script(type='text/javascript').
+        $(document).ready(function() {
+          $('#modi').click(function() {
+            $('button:hidden').show();
+            $('#modi').hide();
+            $('#clear').hide();
+            $(':input').removeAttr('readonly');
+          });
+          $('#cancel').click(function() {
+            $(':submit').hide();
+            $('#cancel').hide();
+            $('#modi').show();
+            $('#clear').show();
+            $(':input').attr('readonly', 'true');
+          });
+        });

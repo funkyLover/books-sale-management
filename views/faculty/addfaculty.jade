@@ -1,0 +1,14 @@
+extends ../layout
+block body
+  .jumbotron
+    h2 添加学院信息
+    form#form-create.form-inline(role='form', action='/faculty', method='post', autocomplete='off')
+      .form-group
+        label(for='id') 学院代号
+        input#id.form-control(type='text', name='id', placeholder='请输入以Z开头的3位学院代号', required)
+      .form-group
+        label(for='name') 学院名称
+        input#name.form-control(type='text', name='name', placeholder='请输入学院名称', required)
+      button.btn.btn-default(type='submit') 提交
+      button.btn.btn-default(type='reset') 重置
+

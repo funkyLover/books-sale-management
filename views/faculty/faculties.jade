@@ -1,0 +1,18 @@
+extends ../layout
+block body
+  .jumbotron
+    h2 学院信息列表
+    if none
+      p 没有记录
+    else
+      each faculty in facultyList
+        form#form-faculty.form-inline(role='form')
+          .form-group
+            label(for='id') 学院代号
+            input#id.form-control(type='text', name='id', value=faculty.id, readonly='true')
+          .form-group
+            label(for='name') 学院名称
+            input#name.form-control(type='text', name='name', value=faculty.name, readonly='true')
+          a.btn.btn-danger(href='/faculty/delete/'+faculty.id) 删除
+
+

@@ -1,0 +1,94 @@
+doctype html
+html(lang='en', data-ember-extension='1')
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    title 五邑大学书库管理系统
+    link(rel="stylesheet", href="/styles/bootstrap.min.css")
+    link(rel='stylesheet', href='/styles/mian.css')
+    link(rel="stylesheet", href="/styles/alertify.core.css")
+    link(rel="stylesheet", href="/styles/alertify.default.css")
+    block styles
+
+    script(type="text/javascript", src="/js/jquery.js")
+    script(type="text/javascript", src="/js/alertify.min.js")
+    script(type="text/javascript", src="/js/jquery.cookie.js")
+    script(type="text/javascript", src="/js/alertmsg.js")
+    script(type="text/javascript", src="/js/bootstrap.min.js")
+
+    body
+      .navbar.navbar-inverse.navbar-fixed-top(role='navigation')
+        .container
+          .navbar-header
+            p.title 书库管理系统
+          .navbar-collapse.collapse
+            ul.nav.navbar-nav
+              li.dropdown
+                a.dropdown-toggle(href='#', data-toggle='dropdown', aria-expanded='false')
+                  | 入库管理
+                  span.caret
+                  ul.dropdown-menu(role='menu')
+                    li
+                      a(href='/proin/create') 添加入库单
+                    li
+                      a(href='/proin/1') 入库单列表
+                  li.dropdown
+                    a.dropdown-toggle(href='#', data-toggle='dropdown', aria-expanded='false')
+                      | 出库管理
+                      span.caret
+                    ul.dropdown-menu(role='menu')
+                      li
+                        a(href='/proout/create') 添加出库单
+                      li
+                        a(href='/proout/1') 出库单列表
+                  li.dropdown
+                    a.dropdown-toggle(href='#', data-toggle='dropdown', aria-expanded='false')
+                      | 书库管理
+                      span.caret
+                    ul.dropdown-menu(role='menu')
+                      li
+                        a(href='/book/create') 添加书本资料库
+                      li
+                        a(href='/book/1') 查看书本信息
+                  li.dropdown
+                    a.dropdown-toggle(href='#', data-toggle='dropdown', aria-expanded='false')
+                      | 学院管理
+                      span.caret
+                    ul.dropdown-menu(role='menu')
+                      li
+                        a(href='/faculty/create') 添加学院信息
+                      li
+                        a(href='/faculty') 查看学院信息
+                  li.dropdown
+                    a.dropdown-toggle(href='#', data-toggle='dropdown', aria-expanded='false')
+                      | 权限管理
+                      span.caret
+                    ul.dropdown-menu(role='menu')
+                      li
+                        a(href='/user/info') 个人信息
+                      li
+                        a(href='/user/password') 修改密码
+                      if(user.isAdmin)
+                        li
+                          a(href='/user/create') 添加用户
+                        li
+                          a(href='/user') 查看用户
+                  li
+                    a(href='/search') 查询功能
+                #user-info.navbar-right
+                  p 欢迎回来,#{user.name}
+                  a.btn.btn-danger(type='button', href='/logout') 登出
+
+      .container
+        block body
+
+    // A few key dependencies, linked in order
+
+    // Bring in the socket.io client
+    script(type="text/javascript", src="/js/socket.io.js")
+
+    // then beef it up with some convenience logic for talking to Sails.js'
+    script(type="text/javascript", src="/js/sails.io.js")
+
+    // listen on socket.io for incoming messages
+    script(type="text/javascript", src="/js/app.js")

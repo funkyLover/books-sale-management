@@ -1,0 +1,23 @@
+{
+  "name": "books-sale-management",
+  "private": true,
+  "version": "0.8.0",
+  "description": "a Sails application",
+  "dependencies": {
+    "ejs": "0.8.4",
+    "grunt": "0.4.1",
+    "jade": "^1.5.0",
+    "optimist": "0.3.4",
+    "sails": "0.9.16",
+    "sails-mongo": "0.9.8",
+    "thenjs": "^1.4.4"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "debug": "node debug app.js"
+  },
+  "main": "app.js",
+  "repository": "",
+  "author": "",
+  "license": ""
+}

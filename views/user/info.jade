@@ -1,0 +1,30 @@
+extends ../layout
+block body
+  .jumbotron
+    h2 个人信息
+    form#form-create.form-inline(role='form', action='/user/'+user.id, method='post', autocomplete='off')
+      .form-group
+        label(for='username') 用户名
+        input#username.form-control(type='text', name='username', readonly='true', value=user.username, required)
+      .form-group
+        label(for='name') 姓名
+        input#name.form-control(type='text', name='name', readonly='true', value=user.name)
+      input(type='hidden', name='_method', value='put')
+      button.btn.btn-default(type='button') 修改个人信息
+      button.btn.btn-default(type='submit', style="display:none") 确认
+      button.btn.btn-default(type='button', style="display:none") 取消
+
+  script(type='text/javascript').
+    $(document).ready(function() {
+      $('button:eq(0)').click(function() {
+        $('button:eq(1),button:eq(2)').show();
+        $(this).hide();
+        $('input').removeAttr('readonly');
+      });
+      $('button:eq(2)').click(function() {
+        $('button:eq(1),button:eq(2)').hide();
+        $('button:eq(0)').hide().show();
+        $('input').attr('readonly', 'true');
+      })
+    });
+

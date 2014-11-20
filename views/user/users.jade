@@ -1,0 +1,31 @@
+extends ../layout
+block body
+  .jumbotron
+    h2 用户列表
+    table.table.table-bordered
+      thead
+        tr
+          th id
+          th 用户名
+          th 名称
+          th 是否管理员
+          th 操作
+      tbody
+        if none
+          tr
+            td#none-td(colspan=6) 没有记录
+        else if me
+          tr
+            td#none-td(colspan=6) 只有你啊
+        else
+          each user in users
+            tr
+              td #{user.id}
+              td #{user.username}
+              td #{user.name}
+              if user.isAdmin
+                td 是
+              else
+                td 否
+              td
+                a.btn.btn-danger(href='/user/delete/'+user.id) 删除条目

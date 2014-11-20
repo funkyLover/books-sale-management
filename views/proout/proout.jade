@@ -1,0 +1,87 @@
+extends ../layout
+block body
+  .jumbotron
+    h2 出库单信息
+    table.table.table-bordered
+      thead
+        tr
+          th 出库单号
+          td(colspan=3) #{proout.id}
+          th 出库时间
+          td.createdAt(colspan=2, data-data=proout.createdAt)
+          th 是否退货
+          if proout.isRefund
+            td 是
+          else
+            td 否
+      tbody
+        tr
+          th 书号
+          th 书名
+          th 版次
+          th 作者
+          th 出版社
+          th 价格
+          th 学院
+          th 出库数量
+          th 折扣
+        each detail in proout.details
+          tr
+            td #{detail.bookid}
+            td #{detail.title}
+            td #{detail.edition}
+            td #{detail.author}
+            td #{detail.press}
+            td #{detail.price}
+            td #{detail.faculty}
+            td #{detail.count}
+            td #{detail.discount * 100}%
+      tfoot
+        tr
+          th 出库单总价
+          td(colspan=2) #{proout.price}
+          th 出库条目
+          td(colspan=2) #{proout.detailCount}
+          th 经手人
+          td(colspan=2) #{proout.handler}
+        tr
+          th 是否付款
+          if(proout.isPay)
+            td(colspan=2) 是
+          else
+            td(colspan=2) 否
+          th 领用人
+          td(colspan=2) #{proout.client}
+          th 联系方式
+          td(colspan=2) #{proout.clientPhone}
+
+    form.form-inline(role='form', action='/proout/client/'+proout.id, method='post', autocomplete='off')
+      .form-group
+        label(for='client') 领用人
+        input#client.form-control(type='text', name='client', placeholder='姓名,单位,或退货单号', required)
+      .form-group
+        label(for='phone') 联系方式
+        input#phone.form-control(type='text', name='phone', placeholder='联系方式', required)
+      button.btn.btn-default(type='submit') 更新
+      button.btn.btn-default(type='reset') 重置
+    hr
+    .noprint
+      a.btn.btn-success(href='/proout/pay/'+proout.id) 改变支付状态
+      a.btn.btn-danger(href='/proout/delete/'+proout.id) 删除
+      button.btn.btn-primary.print(type='button') 打印
+
+    script(type="text/javascript", src="/js/moment.js")
+    script(type="text/javascript", src="/js/moment.min.js")
+    script(type="text/javascript").
+      $(document).ready(function(){
+        $('.print').click(function() {
+          window.print();
+        });
+      });
+    style(media="print").
+      form{
+        display: none
+      }
+      .noprint {
+        display: none
+      }

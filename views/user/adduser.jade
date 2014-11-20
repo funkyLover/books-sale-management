@@ -1,0 +1,15 @@
+extends ../layout
+block body
+  .jumbotron
+    h2 添加用户
+    form#form-create.form-inline(role='form', action='/user', method='post', autocomplete='off')
+      .form-group
+        label(for='username') 用户名
+        input#username.form-control(type='text', name='username', placeholder='请输入用户名', required)
+      #option
+        label(for='admin') 管理员
+        input#admin(checked, name='option', type='radio', value='admin')
+        label(for='user') 普通用户
+        input#user(checked, name='option', type='radio', value='user')
+      button.btn.btn-default(type='submit') 确认
+      button.btn.btn-default(type='reset') 重置

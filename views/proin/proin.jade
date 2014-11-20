@@ -1,0 +1,64 @@
+extends ../layout
+block body
+  .jumbotron
+    h2 入库单信息
+    table.table.table-bordered
+      thead
+        tr
+          th 入库单号
+          td(colspan=7) #{proin.id}
+        tr
+          th 来货单号
+          td(colspan=3) #{proin.manifest}
+          th 入库时间
+          td.createdAt(colspan=3, data-data=proin.createdAt)
+      tbody
+        tr
+          th 书号
+          th 书名
+          th 版次
+          th 作者
+          th 出版社
+          th 价格
+          th 学院
+          th 入库数量
+        each detail in proin.details
+          tr
+            td #{detail.bookid}
+            td #{detail.title}
+            td #{detail.edition}
+            td #{detail.author}
+            td #{detail.press}
+            td #{detail.price}
+            td #{detail.faculty}
+            td #{detail.count}
+      tfoot
+        tr
+          th 入库单总价
+          td #{proin.price}
+          th 是否退货
+          if proin.isRefund
+            td 是
+          else
+            td 否
+          th 入库数目
+          td(colspan=3) #{proin.count}
+        tr
+          th 经手人
+          td(colspan=7) #{proin.handler}
+    .noprint
+      a.btn.btn-danger.delete(href='/proin/delete/'+proin.id) 删除
+      button.btn.btn-primary.print 打印
+
+    script(type="text/javascript", src="/js/moment.js")
+    script(type="text/javascript", src="/js/moment.min.js")
+    script(type="text/javascript").
+      $(document).ready(function(){
+        $('.print').click(function() {
+          window.print();
+        });
+      });
+    style(media="print").
+      .noprint {
+        display: none
+      }

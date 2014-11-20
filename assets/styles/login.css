@@ -1,0 +1,13 @@
+body {
+  background-image: url(../images/index.jpg);
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#login {
+  height: 200px;
+  width: 200px;
+  margin:0 auto;
+  margin-top: 200px;
+}

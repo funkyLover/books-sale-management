@@ -1,0 +1,173 @@
+extends ../layout
+block body
+  .jumbotron
+    h2 搜索页
+    form.form-inline#search(role='form', action='#', autocomplete='off')
+      .form-group
+        select#condition1.form-control(name='condition1', required)
+          option(value='proin') 入库单
+          option(value='proout') 出库单
+          option(value='book') 书本
+      .form-group
+        select#condition2.form-control(name='condition2', required)
+      .form-group#val
+        input.form-control(name='val', type='text', placeholder='请输入搜索关键字')
+      button.btn.btn-default(type='button') 搜索
+    table.table.table-bordered
+  script(type='text/javascript').
+    $(document).ready(function() {
+      var con2 = [
+                  [
+                    {val: 'id', str: '按入库单号'},
+                    {val: 'manifest', str: '按来货单号'},
+                    {val: 'quantum', str: '按日期段'},
+                    {val: 'isRefund', str: '按退货单'}
+                   ],
+                  [
+                    {val: 'id', str: '按出库单号'},
+                    {val: 'isPay', str: '按付款情况'},
+                    {val: 'quantum', str: '按日期段'},
+                    {val: 'isRefund', str: '按退货单'}
+                  ],
+                  [
+                    {val: 'bookId', str: '按书号'},
+                    {val: 'author', str: '按作者'},
+                    {val: 'title', str: '按书名'},
+                    {val: 'faculty', str: '按学院'}
+                  ]
+                 ];
+      var $input = $('input').clone();
+      $('#val').empty();
+      $('#condition1').change(function() {
+        var index = $(this).get(0).selectedIndex;
+        var cons2 = con2[index];
+        $('#condition2').empty();
+        for(var i=0;i<cons2.length;i++) {
+          $('#condition2').append("<option value='" + cons2[i].val + "'>" + cons2[i].str + "</option>");
+        }
+        $('#condition2').change();
+      });
+
+      $('#condition2').change(function() {
+        var val = $(this).val();
+        if(val == 'quantum') {
+          var $one = $input.clone();
+          var $two = $input.clone();
+          $('#val').empty();
+          $('#val').append($one);
+          $('#val').append($two);
+          $('input').attr('type', 'date');
+        } else if(val == 'isRefund') {
+          var $one = $input.clone();
+          $('#val').empty();
+          $('#val').append($one);
+          $('input').attr('type', 'hidden');
+          $('input').attr('value', true);
+        } else if(val == 'isPay') {
+          $('#val').empty();
+          $('#val').append("<select name='val' class='form-control'>" +
+                            "<option value=true>已付款</option>" +
+                            "<option value=false>未付款</option>" +
+                          "</select>");
+        } else {
+          $('#val').empty();
+          $input.val("");
+          $('#val').append($input);
+        }
+
+      });
+
+      $('button').click(function() {
+        $('table').empty();
+        var con1 = $('#condition1').val();
+        var con2 = $('#condition2').val();
+        var $val = $("[name='val']");
+        var val;
+        if($val.length == 2) {
+          val = [];
+          val.push($("[name='val']").eq(0).val());
+          val.push($("[name='val']").eq(1).val());
+        } else {
+          val = $("[name='val']").val();
+        }
+        console.log(con1, con2, val);
+        $.post('/search/'+con1, {key: con2, val: val}, function(data, status) {
+          console.log(data);
+          if(data.error) {
+            alertify.log(data.msg);
+          } else if(data.none) {
+            alertify.log('没有记录');
+          } else if(data.flag == 1) {
+            //显示proins
+            console.log(1);
+            $('table').append('<thead>' +
+                                '<tr>' +
+                                  '<th>入库单号</th>' +
+                                  '<th>来货单号</th>' +
+                                  '<th>总价</th>' +
+                                  '<th>经手人</th>' +
+                                  '<th>操作</th>' +
+                                '</tr>' +
+                              '</thead><tbody></tbody>');
+            for(var i=0;i<data.proins.length;i++) {
+              $('tbody').append('<tr>' +
+                                  '<td>' + data.proins[i].id + '</td>' +
+                                  '<td>' + data.proins[i].manifest + '</td>' +
+                                  '<td>' + data.proins[i].price + '</td>' +
+                                  '<td>' + data.proins[i].handler + '</td>' +
+                                  '<td><a class="btn btn-primary" target="_blank" href="/proin/view/'+ data.proins[i].id +'">查看详情</a></td>' +
+                                '</tr>');
+            }
+          } else if(data.flag == 2) {
+            //显示proouts
+            console.log(2);
+            $('table').append('<thead>' +
+                                 '<tr>' +
+                                   '<th>出库单号</th>' +
+                                   '<th>出库条目</th>' +
+                                   '<th>总价</th>' +
+                                   '<th>经手人</th>' +
+                                   '<th>操作</th>' +
+                                 '</tr>' +
+                              '</thead><tbody></tbody>');
+            for(var i=0;i<data.proouts.length;i++) {
+              $('tbody').append('<tr>' +
+                                  '<td>' + data.proouts[i].id + '</td>' +
+                                  '<td>' + data.proouts[i].detailCount + '</td>' +
+                                  '<td>' + data.proouts[i].price + '</td>' +
+                                  '<td>' + data.proouts[i].handler + '</td>' +
+                                  '<td><a class="btn btn-primary" target="_blank" href="/proout/view/'+ data.proouts[i].id +'">查看详情</a></td>' +
+                                '</tr>');
+            }
+          } else if(data.flag == 3) {
+            //显示books
+            console.log(3);
+            $('table').append('<thead>' +
+                                 '<tr>' +
+                                   '<th width="20%">书号</th>' +
+                                   '<th width="20%">书名</th>' +
+                                   '<th width="15%">作者</th>' +
+                                   '<th width="10%">版次</th>' +
+                                   '<th width="15%">学院</th>' +
+                                   '<th>操作</th>' +
+                                 '</tr>' +
+                               '</thead><tbody></tbody>');
+            for(var i=0;i<data.books.length;i++) {
+              $('tbody').append('<tr>' +
+                                  '<td>' + data.books[i].bookId + '</td>' +
+                                  '<td>' + data.books[i].title + '</td>' +
+                                  '<td>' + data.books[i].author + '</td>' +
+                                  '<td>' + data.books[i].edition + '</td>' +
+                                  '<td>' + data.books[i].faculty + data.books[i].fname + '</td>' +
+                                  '<td>' +
+                                    '<a class="btn btn-primary" target="_blank" href="/book/view/'+ data.books[i].id +'">查看详情</a>' +
+                                    '<a class="btn btn-danger" href="/book/delete/'+ data.books[i].id +'">删除条目</a>' +
+                                  '</td>' +
+                                '</tr>');
+            }
+          }
+        });
+      });
+      $('#condition1').change();
+      $('#condition2').change();
+    });

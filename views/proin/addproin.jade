@@ -1,0 +1,175 @@
+extends ../layout
+
+block body
+  .jumbotron
+    h2 添加入库单
+    form#form-create.form-inline(role='form', action='/proin', method='post', autocomplete='off')
+      .form-group
+        label(for='proinid') 来货单号
+        input#proinid.form-control(type='text', name='proinid', placeholder='请输入来货单号', required)
+      .details
+        .detail
+          .form-group
+            label 书号
+            input.form-control(type='text', name='bookid', placeholder='请输入书号', required)
+          .form-group
+            label 书名
+            select.form-control.pro-select(name='title', required)
+          .form-group
+            label 版次
+            select.form-control.pro-select(name='edition', required)
+          .form-group
+            label 作者
+            input.form-control(type='text', name='author', readonly='true')
+          .form-group
+            label 出版社
+            input.form-control(type='text', name='press', readonly='true')
+          .form-group
+            label 单价
+            input.form-control(type='text', name='price', readonly='true')
+          .form-group
+            label 数量
+            input.form-control(type='text', name='count', placeholder='请输入入库数量', required)
+          input(type='hidden', name='id', value='')
+      .form-group
+        button#add-details.btn.btn-success(type='button') 添加条目
+        button#remove-details.btn.btn-danger(type='button') 删除条目
+      .form-group
+        label 是否退货
+        select.form-control(name='isrefund')
+          option(value=0, selected='selected') 否
+          option(value=1) 是
+      button.btn.btn-default(type='submit') 提交
+      button.btn.btn-default(type='reset') 重置
+
+    script(type='text/javascript').
+      $(document).ready(function() {
+        //每个入库单至少有一条目
+        var $detail = $('.detail');
+        $('.details').empty();
+        $detail.clone().appendTo($('.details'));
+
+        //按钮添加条目
+        $('#add-details').click(function() {
+          var $one = $detail.clone();
+          $one.appendTo($('.details'));
+          addEvent();
+        });
+
+        //按钮删除条目
+        $('#remove-details').click(function() {
+          var $details = $('.detail');
+          if($details.length == 1) {
+            console.log($details.length);
+            alertify.log("删除失败");
+          } else {
+            var $one = $('.detail:last');
+            $one.remove();
+            alertify.log("成功删除");
+          }
+        });
+
+        //为书号 书名 版次控件分别添加事件
+        function addEvent() {
+          //为书号input控件添加事件
+          $("[name='bookid']:last").change(function() {
+            var index = $("[name='bookid']").index($(this));
+            removeBookdetails(index);
+            $.get('/bookid/'+$(this).val(), function(data, status) {
+              if(data.error || data.none) {
+                alertify.log(data.msg);
+                $("[name='bookid']").eq(index).css({ 'color': '#F00'});
+                removeBookdetails(index);
+              } else if(data.ok){
+                $("[name='bookid']").eq(index).css({ 'color': '#555'});
+                addBookTitles(data.books, index);
+              }
+            });
+          });
+
+          //为书名select控件添加事件
+          $("[name='title']:last").change(function() {
+            var index = $("[name='title']").index($(this));
+            var bookid = $("[name='bookid'").eq(index).val();
+            $.get('/title/'+bookid+'/'+$(this).val(), function(data, status) {
+              if(data.error || data.none) {
+                alertify.log(data.msg);
+              } else if(data.ok){
+                addBookEditions(data.books, index);
+              }
+            });
+          });
+
+          //为版次select控件添加事件
+          $("[name='edition']:last").change(function() {
+            var index = $("[name='edition']").index($(this));
+            var bookid = $("[name='bookid'").eq(index).val();
+            var title = $("[name='title'").eq(index).val();
+            $.get('/edition/'+bookid+'/'+title+'/'+$(this).val(), function(data, status) {
+              if(data.error || data.none) {
+                alertify.log(data.msg);
+              } else if(data.ok) {
+                addBookDetails(data.book, index);
+              }
+            })
+          });
+
+        }
+
+        addEvent();
+
+        //填充书名select控件
+        function addBookTitles(books, index) {
+          if(books.length == 1) {
+            $("[name='title']").eq(index).html("<option value='" + books[0].title + "'>" + books[0].title + "</option>");
+            $("[name='edition']").eq(index).html("<option value='" + books[0].edition + "'>" + books[0].edition + "</option>");
+            $("[name='author']").eq(index).val(books[0].author);
+            $("[name='press']").eq(index).val(books[0].press);
+            $("[name='price']").eq(index).val(books[0].price);
+            $("[name='id']").eq(index).val(books[0].id);
+          } else {
+            $("[name='title']").eq(index).empty();
+            for(var i=0; i<books.length; i++) {
+              $("[name='title']").eq(index).append("<option value='" + books[i].title + "'>" + books[i].title + "</option>");
+            }
+            $("[name='title']").eq(index).change();
+          }
+        }
+
+        //填充版次select控件
+        function addBookEditions(books, index) {
+          if(books.length == 1) {
+            $("[name='edition']").eq(index).html("<option value='" + books[0].edition + "'>" + books[0].edition + "</option>");
+            $("[name='author']").eq(index).val(books[0].author);
+            $("[name='press']").eq(index).val(books[0].press);
+            $("[name='price']").eq(index).val(books[0].price);
+            $("[name='id']").eq(index).val(books[0].id);
+          } else {
+            $("[name='edition']").eq(index).empty();
+            for(var i=0; i<books.length; i++) {
+              $("[name='edition']").eq(index).append("<option value='" + books[i].edition + "'>" + books[i].edition + "</option>");
+            }
+            $("[name='edition']").eq(index).change();
+          }
+        }
+
+        function addBookDetails(book, index) {
+          $("[name='author']").eq(index).val(book.author);
+          $("[name='press']").eq(index).val(book.press);
+          $("[name='price']").eq(index).val(book.price);
+          $("[name='id']").eq(index).val(book.id);
+        }
+
+        //当输入错误书号时直接重置该detail项状态
+        function removeBookdetails(index) {
+          $("[name='title']").eq(index).empty();
+          $("[name='edition']").eq(index).empty();
+          $("[name='author']").eq(index).val("");
+          $("[name='press']").eq(index).val("");
+          $("[name='price']").eq(index).val("");
+          $("[name='id']").eq(index).val("");
+        }
+
+      });
+
+

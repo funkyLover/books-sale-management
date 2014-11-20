@@ -1,0 +1,59 @@
+extends ../layout
+block body
+  .jumbotron
+    h2 书本资料库信息
+    form#form-create.form-inline(role='form', action='/book/'+book.id, method='post', autocomplete='off')
+      .form-group
+        label(for='bookid') 书号
+        input#bookid.form-control(type='text', name='bookid', readonly='true', value=book.bookId, required)
+      .form-group
+        label(for='title') 书名
+        input#title.form-control(type='text', name='title', readonly='true', value=book.title, required)
+      .form-group
+        label(for='author') 作者
+        input#author.form-control(type='text', name='author', readonly='true', value=book.author, required)
+      .form-group
+        label(for='press') 出版社
+        input#press.form-control(type='text', name='press', readonly='true', value=book.press, required)
+      .form-group
+        label(for='edition') 版次
+        input#edition.form-control(type='text', name='edition', readonly='true', value=book.edition, required)
+      .form-group
+        label(for='price') 单价
+        input#price.form-control(type='text', name='price', readonly='true', value=book.price, required)
+      .form-group
+        label(for='stock') 库存数
+        input#stock.form-control(type='text', name='stock', readonly='true', value=book.stock, disabled='true', required)
+      .form-group
+        label(for='faculty') 所属学院
+        select#facult.form-control(name='faculty', disabled='true')
+          each faculty in faculties
+            if book.faculty == faculty.id
+              option(value=faculty.id, selected) #{faculty.name}
+            else
+              option(value=faculty.id)  #{faculty.name}
+      input(type='hidden', name='_method', value='put')
+      button#modi.btn.btn-default(type='button') 修改
+      if user.isAdmin
+        a#count.btn.btn-primary(href='/book/stock/'+book.id, type='button') 清点库存
+      button.btn.btn-default(type='submit', style="display:none") 确认
+      button#cancel.btn.btn-default(type='button', style="display:none") 取消
+
+  script(type='text/javascript').
+    $(document).ready(function() {
+      $('#modi').click(function () {
+        $('button:hidden').show();
+        $('#modi').hide();
+        $('#count').hide();
+        $(':input').removeAttr('readonly');
+        $('#facult').removeAttr('disabled');
+      });
+      $('#cancel').click(function() {
+        $('#modi').show();
+        $('#count').show();
+        $('#cancel').hide();
+        $(':submit').hide();
+        $(':input').attr('readonly', 'true');
+        $('#facult').attr('disabled', 'true');
+      });
+    });

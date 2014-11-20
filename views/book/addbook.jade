@@ -1,0 +1,33 @@
+extends ../layout
+
+block body
+  .jumbotron
+    h2 添加书本资料库信息
+    form#form-create.form-inline(role='form', action='/book', method='post', autocomplete='off')
+      .form-group
+        label(for='bookid') 书号
+        input#bookid.form-control(type='text', name='bookid', placeholder='请输入书号', required)
+      .form-group
+        label(for='title') 书名
+        input#title.form-control(type='text', name='title', placeholder='请输入书名', required)
+      .form-group
+        label(for='author') 作者
+        input#author.form-control(type='text', name='author', placeholder='请输入作者名', required)
+      .form-group
+        label(for='press') 出版社
+        input#press.form-control(type='text', name='press', placeholder='请输入出版社名称', required)
+      .form-group
+        label(for='edition') 版次
+        input#edition.form-control(type='text', name='edition', placeholder='请输入版次', required)
+      .form-group
+        label(for='price') 单价
+        input#price.form-control(type='text', name='price', placeholder='请输入单价', required)
+      if !none
+        .form-group
+          label(for='faculty') 所属学院
+          select#facult.form-control(name='faculty')
+            each faculty in facultyList
+              option(value=faculty.id) #{faculty.name}
+      button.btn.btn-default(type='submit') 提交
+      button.btn.btn-default(type='reset') 重置
+
